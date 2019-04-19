@@ -15,8 +15,6 @@ class User(db.Model):
     events = db.relationship('Event', backref='owner', lazy='dynamic')
     topic_members = db.relationship('Topic_member', backref='member', lazy='dynamic')
     bookmarks = db.relationship('Bookmark', backref='owner', lazy='dynamic')
-
-
     
 
 class Post(db.Model):
