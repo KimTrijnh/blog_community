@@ -92,47 +92,7 @@ def del_row_category(id):
     db.session.delete(c)
     db.session.commit()
 
-################    
-#ROUTES HERE
-# @app.route('/')
-# @app.route('/home')
-# def home():
-#     return 'hello'
 
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-
-# @app.route('/create_post', methods=('GET', 'POST'))
-# # @login_required
-# def createPost():
-#     # if not current_user.is_authenticated:
-#     #     flash='please login to create new post'
-#     #     return redirect(url_for('login'))
-#     # else:
-#     if request.method == 'POST':
-#         title = request.form['title']
-#         category_id = request.form['category']
-#         content = request.form['content']
-#         # topic_id = 
-#         if title and content and category_id:
-#             create_post(title, content, int(category_id), topic_id=None)
-#             return redirect(url_for('home'))
-#         else:
-#             flash('invalid input')
-
-#     return render_template('create_post.html')
-
-# def create_post(title, content, category_id, user_id = 1, topic_id=None):
-#     p = Post(title=title, content=content, user_id=user_id, category_id=category_id, topic_id=topic_id)
-#     db.session.add(p)
-#     db.session.commit()
-
-
-# #always put this at bottom
-# @login_manager.user_loader
-# def load_user(id):
-#     return User.query.get(int(id))
 
 
 

@@ -9,17 +9,20 @@ app = Flask(__name__)
 #set config here, already set SECRET_KEY, DATABASE_URL
 app.config.from_object(Config)
 
-#connect to database
+#DATABSE CONNECT AND SETTING MIGRATE
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
 
-#ROUTES HERE
+###  ROUTES HERE
 @app.route('/')
 @app.route('/home')
 def home():
     return 'hello'
+
+
+
 
 
 
