@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # DATABASES HERE 
 class User(UserMixin, db.Model):
@@ -17,7 +18,14 @@ class User(UserMixin, db.Model):
     events = db.relationship('Event', backref='owner', lazy='dynamic')
     topic_members = db.relationship('Topic_member', backref='member', lazy='dynamic')
     bookmarks = db.relationship('Bookmark', backref='owner', lazy='dynamic')
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
     
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+
 
 class Post(db.Model):
     id= db.Column(db.Integer, primary_key = True)
@@ -77,6 +85,9 @@ class Bookmark(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+
+
+## FUNCTIONS TO ADJUST DATABASE TABLE'S
 # db.create_all()
 def create_category(name):
     c = Category(name=name)
@@ -92,6 +103,7 @@ def del_row_category(id):
     db.session.delete(c)
     db.session.commit()
 
+def create_user(name, email, password):
 
 
 
