@@ -87,6 +87,9 @@ class Bookmark(db.Model):
 
 
 
+
+
+
 ## FUNCTIONS TO ADJUST DATABASE TABLE'S
 # db.create_all()
 def create_category(name):
@@ -103,7 +106,7 @@ def del_row_category(id):
     db.session.delete(c)
     db.session.commit()
 
-# def create_user(name, email, password):
+
 
 
 
