@@ -55,7 +55,7 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
 
-class Topic_member(db.Column):
+class Topic_member(db.Model):
     id= db.Column(db.Integer, primary_key = True)
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -77,15 +77,15 @@ class Bookmark(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-
+db.create_all()
 def create_category(name):
     c = Category(name=name)
     db.session.add(c)
     db.session.commit()
 
-# create_category('Frontend Development')
-# create_category('Backend Development')
-# create_category('Design UI/UX')
+create_category('Frontend Development')
+create_category('Backend Development')
+create_category('Design UI/UX')
 
 ################    
 #ROUTES HERE
