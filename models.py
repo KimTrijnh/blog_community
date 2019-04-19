@@ -83,12 +83,12 @@ def create_category(name):
     db.session.add(c)
     db.session.commit()
 
-create_category('Frontend Development')
-create_category('Backend Development')
-create_category('Design UI/UX')
+# create_category('Frontend Development')
+# create_category('Backend Development')
+# create_category('Design UI/UX')
 
 def del_row_category(id):
-    c = Category(id=id)
+    c = Category.query.filter_by(id=id).first()
     db.session.delete(c)
     db.session.commit()
 
