@@ -83,21 +83,15 @@ def create_category(name):
     db.session.add(c)
     db.session.commit()
 
-# create_category('Frontend Development')
-# create_category('Backend Development')
-# create_category('Design UI/UX')
+create_category('Frontend Development')
+create_category('Backend Development')
+create_category('Design UI/UX')
 
 def del_row_category(id):
     c = Category(id=id)
     db.session.delete(c)
     db.session.commit()
 
-del_row_category(9)
-del_row_category(8)
-del_row_category(7)
-del_row_category(6)
-del_row_category(5)
-del_row_category(4)
 ################    
 #ROUTES HERE
 # @app.route('/')
