@@ -22,7 +22,6 @@ class User(UserMixin, db.Model, object):
     password_hash = db.Column(db.String(120), nullable=False)
     posts = db.relationship('Post', backref='owner', lazy='dynamic')
     likes = db.relationship('Like', backref='owner', lazy='dynamic')
-    posts= db.relationship('Post', backref='owner', lazy='dynamic')
     topics = db.relationship('Topic', backref='owner', lazy='dynamic')
     comments = db.relationship('Comment', backref='owner', lazy='dynamic')
     likes = db.relationship('Like', backref='owner', lazy='dynamic')

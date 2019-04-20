@@ -3,7 +3,8 @@
   <div class="row">
     <div class="col-md-8">
       <h1>{{ post.title }}</h1>
-      <span>{{ post.created_at }}</span>
+      <span>{{ 
+          moment(post.created_at ).format('LLL') }}</span>
       <div>
         {{ post.content }}
       </div>
@@ -12,14 +13,23 @@
       <div id="comment">
           comments
       </div>
-      <div class="form-group">
+      <form class="form-group" method='POST'>
          <textarea class="form-control" id="comment" rows="3" name=comment>your comment...</textarea>
          <button class="btn btn-success" type="submit">submit</button>
-    </div>
+      </form>
     </div>
     <div class="col-md-4">
+      {% if post.topic %}
+      <p><a href="{{ url_for('topic', id= post.topic.id ) }}">Topic: {{ post.topic.title }}</a></p>
+      {% endif %}
         <p>category: {{ category.name }}</p>
     </div>
   </div>
 </div>
+
+{% if post.topic %}
+<div class="d-flex flex-wrap">
+<h4>Post that you might interted in</h4>
+</div>
+{% endif %}
 {% endblock %}
