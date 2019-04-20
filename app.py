@@ -90,25 +90,25 @@ def create_comment(content, user_id, post_id):
 
 
 
-@app.route('/create_topic', methods=('GET', 'POST'))
-def create_topic():
-    current_user = User.query.filter_by(id=1).first()
-    if not current_user.is_authenticated:
-        flash('please login to create topic')
-        return redirect(url_for('login'))
-    else:
-        if request.method == 'POST':
-            title = request.form['title']
-            description = request.form['description']
-            user_id = current_user.id
-            category = request.form['category']
+# @app.route('/create_topic', methods=('GET', 'POST'))
+# def create_topic():
+#     current_user = User.query.filter_by(id=1).first()
+#     if not current_user.is_authenticated:
+#         flash('please login to create topic')
+#         return redirect(url_for('login'))
+#     else:
+#         if request.method == 'POST':
+#             title = request.form['title']
+#             description = request.form['description']
+#             user_id = current_user.id
+#             category = request.form['category']
 
-            if title and description and category:
-                t = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
-                db.session.add(t)
-                db.session.commit()
-                flash('your topic is successfull created')
-                return redirect(url_for('topic', topic_id= t.id))
-            else:
-                flash('please check your title/description/catagory')
-    return render_template('create_topic.html')
+#             if title and description and category:
+#                 t = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
+#                 db.session.add(t)
+#                 db.session.commit()
+#                 flash('your topic is successfull created')
+#                 return redirect(url_for('topic', topic_id= t.id))
+#             else:
+#                 flash('please check your title/description/catagory')
+#     return render_template('create_topic.html')
