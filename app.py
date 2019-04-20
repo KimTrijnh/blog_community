@@ -31,7 +31,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/home')
 def home():
-    u = User.query.filter_by(user_id=1).first()
+    u = User.query.filter_by(id=1).first()
     return u.username
 
 
