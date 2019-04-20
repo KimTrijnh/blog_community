@@ -5,6 +5,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # DATABASES HERE
 
+# tags = db.Table('tags',
+#     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+#     db.Column('page_id', db.Integer, db.ForeignKey('page.id'), primary_key=True)
+# )
+
+# class Page(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     tags = db.relationship('Tag', secondary=tags, lazy='subquery',
+#         backref=db.backref('pages', lazy=True))
+
+# class Tag(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+
 
 subs = db.Table('subs', 
 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -12,7 +25,7 @@ db.Column('topic_id', db.Integer, db.ForeignKey('topic.id')))
 
 bookmarks = db.Table('bookmarks', 
 db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
-db.Column('user.id', db.Integer, db.ForeignKey('user.id')))
+db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
 
 class User(UserMixin, db.Model, object):
@@ -27,7 +40,7 @@ class User(UserMixin, db.Model, object):
     comments = db.relationship('Comment', backref='owner', lazy='dynamic')
     likes = db.relationship('Like', backref='owner', lazy='dynamic')
     events = db.relationship('Event', backref='owner', lazy='dynamic')
-    subscriptions = db.relationship('Topic', secondary='subs', backref=db.backref('subscribers', lazy='dynamic'))
+    subscriptions = db.relationship('Topic', secondary=subs, backref=db.backref('subscribers', lazy='dynamic'))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -56,7 +69,7 @@ class Post(db.Model):
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), nullable=True )
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     likes = db.relationship('Like', backref='post', lazy='dynamic')
-    bookmarks = db.relationship('User', secondary='bookmarks', backref=db.backref('posts', lazy='dynamic'))
+    bookmarks = db.relationship('User', secondary= bookmarks , backref=db.backref('posts', lazy='dynamic'))
 
 
 
