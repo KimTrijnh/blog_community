@@ -6,8 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # DATABASES HERE
 
 
-
-
 subs = db.Table('subs', 
 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
 db.Column('topic_id', db.Integer, db.ForeignKey('topic.id')))
