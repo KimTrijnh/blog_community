@@ -30,7 +30,7 @@ your comment...</textarea
     <div class="col-md-4">
       {% if post.topic %}
       <p>
-        <a href="{{ url_for('topic', id= post.topic.id ) }}">
+        <a href="{{ url_for('topic', topic_id = post.topic.id )}}">
           Topic: {{ post.topic.title }}</a
         >
       </p>

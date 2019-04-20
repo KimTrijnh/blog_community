@@ -1,6 +1,4 @@
-{% extends "layout.html" %} 
-
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="container">
   <form method="POST">
     <div class="row">
@@ -11,7 +9,12 @@
           class="form-control"
           id="title"
         />
-        <textarea class="form-control" id="content" name="content" rows="20"></textarea>
+        <textarea
+          class="form-control"
+          id="content"
+          name="content"
+          rows="20"
+        ></textarea>
         <button class="btn btn-primary" type="submit">
           Submit
         </button>
@@ -35,6 +38,14 @@
           </select>
         </div>
         <div class="form-group">
+          <label for="related_topic">In topic:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="related_topic"
+            name="related_topic"
+            placeholder="related topic"
+          />
           <label for="invite">Invite people</label>
           <input
             type="text"

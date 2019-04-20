@@ -44,8 +44,9 @@ def login():
 
 
 @app.route('/create_post', methods=('GET','POST'))
+@app.route('/create_post/<int:topic_id>', methods=('GET','POST'))
 # @login_required
-def create_post():
+def create_post(topic_id):
     current_user = User.query.filter_by(id=1).first()
     if not current_user.is_authenticated:
         flash('please login to create post')
@@ -56,7 +57,7 @@ def create_post():
             content = request.form['content']
             user_id = current_user.id
             category = request.form['category']
-            topic_id = None
+            topic_id = topic_id
             if title and content and category:
                 p = Post(title = title, content = content, user_id = user_id, category_id = int(category), topic_id=topic_id)
                 db.session.add(p)
@@ -90,25 +91,33 @@ def create_comment(content, user_id, post_id):
 
 
 
-# @app.route('/create_topic', methods=('GET', 'POST'))
-# def create_topic():
-#     current_user = User.query.filter_by(id=1).first()
-#     if not current_user.is_authenticated:
-#         flash('please login to create topic')
-#         return redirect(url_for('login'))
-#     else:
-#         if request.method == 'POST':
-#             title = request.form['title']
-#             description = request.form['description']
-#             user_id = current_user.id
-#             category = request.form['category']
+@app.route('/create_topic', methods=('GET', 'POST'))
+def create_topic():
+    current_user = User.query.filter_by(id=1).first()
+    if not current_user.is_authenticated:
+        flash('please login to create topic')
+        return redirect(url_for('login'))
+    else:
+        if request.method == 'POST':
+            title = request.form['title']
+            description = request.form['description']
+            user_id = current_user.id
+            category = request.form['category']
 
-#             if title and description and category:
-#                 t = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
-#                 db.session.add(t)
-#                 db.session.commit()
-#                 flash('your topic is successfull created')
-#                 return redirect(url_for('topic', topic_id= t.id))
-#             else:
-#                 flash('please check your title/description/catagory')
-#     return render_template('create_topic.html')
+            if title and description and category:
+                t = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
+                db.session.add(t)
+                db.session.commit()
+                flash('your topic is successfull created')
+                return redirect(url_for('topic', topic_id= t.id))
+            else:
+                flash('please check your title/description/catagory')
+    return render_template('create_topic.html')
+
+@app.route('/topic/<int:topic_id>')
+def topic(topic_id):
+    current_user.id=1
+    t = Topic.query.filter_by(id=topic_id).first()
+    author = t.owner.username
+    category = Category.query.filter_by(id=t.category_id).first()
+    return render_template('topic.html', topic = t, author = author, category=category)
