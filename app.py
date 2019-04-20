@@ -68,10 +68,21 @@ def create_post():
     return render_template('create_post.html')
 
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods= ('GET', 'POST'))
 def post(post_id):
+    current_user.id=1
     p = Post.query.filter_by(id=post_id).first()
     author = User.query.filter_by(id=p.user_id).first()
     category = Category.query.filter_by(id=p.category_id).first()
-    return render_template('post.html', post = p, author = author, category = category)
+    if request.method == 'POST':
+        comment = request.form['comment']
+        create_comment(comment, current_user.id, post_id)
+    comments = Comment.query.filter_by(post_id= post_id).all()
+    comments.reverse()
+    return render_template('post.html', post = p, author = author, category = category, comments = comments)
 
+
+def create_comment(content, user_id, post_id):
+    c = Comment(content=content, user_id=user_id, post_id=post_id)
+    db.session.add(c)
+    db.session.commit()
