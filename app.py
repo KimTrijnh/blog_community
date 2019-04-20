@@ -31,8 +31,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/home')
 def home():
-    u = User.query.filter_by(id=1).first()
-    return u.username
+    return 'huong'
 
 
 @app.route('/login')
@@ -41,34 +40,34 @@ def login():
 
 
 
-@app.route('/create_post', methods=('GET','POST'))
-# @login_required
-def create_post():
-    current_user = User.query.filter_by(id=1).first()
-    if not current_user.is_authenticated:
-        flash('please login to create post')
-        return redirect(url_for('login'))
-    else:
-        if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['content']
-            user_id = 1
-            category = request.form['category']
-            topic_id = None
-            if title and content and category:
-                p = Post(title = title, content = content, user_id = user_id, category_id = int(category), topic_id=topic_id)
-                db.session.add(p)
-                db.session.commit()
-                flash('your post is successfull pulished')
-                return redirect(url_for('post', post_id= p.id))
-            else:
-                flash('please check your title/content/catagory')
-    return render_template('create_post.html')
+# @app.route('/create_post', methods=('GET','POST'))
+# # @login_required
+# def create_post():
+#     current_user = User.query.filter_by(id=1).first()
+#     if not current_user.is_authenticated:
+#         flash('please login to create post')
+#         return redirect(url_for('login'))
+#     else:
+#         if request.method == 'POST':
+#             title = request.form['title']
+#             content = request.form['content']
+#             user_id = 1
+#             category = request.form['category']
+#             topic_id = None
+#             if title and content and category:
+#                 p = Post(title = title, content = content, user_id = user_id, category_id = int(category), topic_id=topic_id)
+#                 db.session.add(p)
+#                 db.session.commit()
+#                 flash('your post is successfull pulished')
+#                 return redirect(url_for('post', post_id= p.id))
+#             else:
+#                 flash('please check your title/content/catagory')
+#     return render_template('create_post.html')
 
 
-@app.route('/post/<int:post_id>')
-def post(post_id):
-    p = Post.query.filter_by(id=post_id).first()
-    author = User.query.filter_by(id=p.user_id).first()
-    category = Category.query.filter_by(id=p.category_id).first()
-    return render_template('post.html', post = p, author = author, category = category)
+# @app.route('/post/<int:post_id>')
+# def post(post_id):
+#     p = Post.query.filter_by(id=post_id).first()
+#     author = User.query.filter_by(id=p.user_id).first()
+#     category = Category.query.filter_by(id=p.category_id).first()
+#     return render_template('post.html', post = p, author = author, category = category)
