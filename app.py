@@ -17,7 +17,7 @@ app.config.from_object(Config)
 ## DATABSE CONNECT below
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-from models import User, Post, Topic, Comment, Event, Bookmark, Like, Topic_member, Category
+from models import User, Post, Topic, Comment, Event, Like, subs, bookmarks, Category
 
 ## DATABASE CONNECT above
 login_manager = LoginManager()
