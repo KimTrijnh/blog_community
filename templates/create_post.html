@@ -1,4 +1,6 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %} 
+
+{% block content %}
 <div class="container">
   <form method="POST">
     <div class="row">
@@ -7,10 +9,10 @@
           name="title"
           placeholder="title"
           class="form-control"
-          id="post-title"
+          id="title"
         />
-        <textarea class="form-control" id="post-body" rows="20"></textarea>
-        <button class="btn btn-primary">
+        <textarea class="form-control" id="content" name="content" rows="20"></textarea>
+        <button class="btn btn-primary" type="submit">
           Submit
         </button>
         <button class="btn btn-primary">
@@ -26,10 +28,10 @@
         />
         <div class="form-group">
           <label for="categories">Categories</label>
-          <select class="form-control" id="categories">
-            <option>frontend development</option>
-            <option>backend development</option>
-            <option>design UI/UX</option>
+          <select class="form-control" id="category" name="category">
+            <option value="1">frontend development</option>
+            <option value="2">backend development</option>
+            <option value="3">design UI/UX</option>
           </select>
         </div>
         <div class="form-group">

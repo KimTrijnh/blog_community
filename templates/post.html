@@ -1,0 +1,25 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>{{ post.title }}</h1>
+      <span>{{ post.created_at }}</span>
+      <div>
+        {{ post.content }}
+      </div>
+      <span>Written by {{ author.username }}</span>
+
+      <div id="comment">
+          comments
+      </div>
+      <div class="form-group">
+         <textarea class="form-control" id="comment" rows="3" name=comment>your comment...</textarea>
+         <button class="btn btn-success" type="submit">submit</button>
+    </div>
+    </div>
+    <div class="col-md-4">
+        <p>category: {{ category.name }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
