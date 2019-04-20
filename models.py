@@ -43,6 +43,7 @@ class Topic(db.Model):
     description = db.Column(db.String(260), nullable=False)
     created_at = db.Column(db.DateTime, default = datetime.utcnow, server_default= db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     posts = db.relationship('Post', backref='topic', lazy='dynamic')
 
 
