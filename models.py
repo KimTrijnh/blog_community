@@ -91,10 +91,10 @@ class Event(db.Model):
 
 
 
-# class Bookmark(db.Model):
-#     id= db.Column(db.Integer, primary_key = True)
-#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+class Bookmark(db.Model):
+    id= db.Column(db.Integer, primary_key = True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
 # class Topic_member(db.Model):

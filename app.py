@@ -34,9 +34,99 @@ def home():
     return 'huong'
 
 
+@app.route('/sign_up')
+def register():
+    if request.method=='POST':
+        username = request.form ['username']
+        password = request.form ['password']
+        email = request.form ['email']
+        db=get_db()
+        error = None 
+         
+
+        if not username:
+            error='Username is required.'
+        elif db.execute('SELECT id from User WHERE username = ?', (username,)).fetchone() is not None: 
+            error='This username is not available'
+        elif not password:
+            error='Password is required.'
+        elif not email:
+            error= 'Email is required.'
+        elif  '@' not in email:
+            error='Email must contain @.'
+        elif db.execute('SELECT id from User WHERE email = ?', (email,)).fetchone() is not None: 
+            error='This email has been registered.'
+        
+        if error is None:
+            db.execute('INSERT INTO User (username,password,email) VALUES (?,?,?)', (username, generate_password_hash(password)), email))
+            db.commit()
+            return redirect(url_for('login.html'))
+    flash(error)
+    return render_template('sign_up.html')
+
 @app.route('/login')
 def login():
-    return render_template('login.html')
+     if request.method=='POST':
+        username = request.form ['username']
+        password = request.form ['password']
+        db=get_db()
+        error = None 
+
+        if not username:
+            error='Username is required.'
+        elif db.execute('SELECT id from User WHERE username = ?', (username,)).fetchone() is None: 
+            error='This username is not registered!'
+        elif not password:
+            error='Password is required.'
+        elif not check_password_hash((db.execute('SELECT id from User WHERE username = ?', (username,)).fetchone()['password']): 
+            error='Incorrect Password!'
+
+        if error is None: 
+            session.clear()
+            session['user_id']=db.execute('SELECT id from User WHERE username = ?', (username,)).fetchone().id
+            return redirect(url_for('home.html'))
+     flash(error)
+     return render_template('login.html')
+
+@app.before_app_request 
+def load_logged_in_user():
+    user_id = session.get('user_id')
+    if user_id is None: 
+        g.user = None 
+    else 
+        g.user = get_db().execute('SELECT * from User WHERE id =?',user_id).fetchone()
+
+@app.route(/logout)
+def logout():
+    session.clear()
+    return redirect(url_for('home.html'))
+
+@app.route(/user_account)
+def user_account(): 
+    user_id = session.get('user_id')
+    if user_id is None:
+        return redirect(url_for('login.html'))
+        error= 'You have to login to access user_account page!'
+    else
+        user =  get_db().execute('SELECT * FROM User WHERE id=?',user_id).fetchone()
+        bookmarks = get_db.execute('SELECT * FROM Bookmark WHERE user_id=?',user_id).fetchall()
+        topics = get_db.execute('SELECT * FROM Topic WHERE user_id=?',user_id).fetchall()
+        return render_template('user_account.html', user=user, bookmarks=bookmarks, topics=topics )
+
+db.create_all()   
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
