@@ -19,9 +19,7 @@
           <i id="like_icon" class="fas fa-heart {{like_color}}"> </i>
       </a>
      </span>
-    <form method='POST'>
-        <a href="{{ url_for('clicked', post_id = post.id )}}"><button type="button" id="btn" name="btn">test</button></a>
-    </form>
+  
    
 
       <div class="my-3">
@@ -29,25 +27,47 @@
       </div>
 
       {% if current_user.is_authenticated %}
-      <form class="form-group" method="POST">
+      <form class="form-group my-4" method="POST">
         <textarea class="form-control" id="comment" rows="3" name="comment">
 your comment...</textarea
         >
-        <button class="btn btn-success" type="submit">submit</button>
+        <button class="btn btn-success my-2" type="submit">submit</button>
       </form>
       {% else %}
       <div class="alert alert-primary my-5" role="alert">
         Please <a href="{{ url_for('login')}}">login</a> to comment
       </div>
-      {% endif %} {% for comment in comments %}
-      <div class="comment">
-        <h5>{{ comment.owner.username }}</h5>
+      {% endif %}
+      
+      {% for comment in comments %}
+      <div class="comment border-bottom my-2">
+        <h6>{{ comment.owner.username }} says:</h6>
+        <small>{{ moment(comment.created_at).format("LLL") }}</small>
         <p>
           {{ comment.content }}
         </p>
-        <span>{{ moment(comment.created_at).format("LLL") }}</span>
       </div>
       {% endfor %}
+
+      {% if post.topic %}
+  <h4>Post that you might be interested in:</h4>
+  <div class="d-flex flex-wrap">
+    
+    {% for post in posts_in_topic %}
+    <div class="card my-2">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <a href="#">{{ post.owner.username }}</a>
+          <p class="card-text">{{ post.content[0:100] }}...<a
+            href="{{ url_for('post', post_id = post.id )}}"
+            >Readmore</a></p>
+          
+        </div>
+      </div>
+
+    {% endfor %}
+  </div>
+  {% endif %}
     </div>
 
     <div class="col-md-4">
@@ -72,22 +92,7 @@ your comment...</textarea
     </div>
   </div>
 
-  {% if post.topic %}
-  <h4>Post that you might interted in</h4>
-  <div class="d-flex flex-wrap">
-    {% for post in posts_in_topic %}
-    <div class="border border-primary">
-      <h3>{{ post.title }}</h3>
-      <p>
-        {{ post.content[0:100] }}...<a
-          href="{{ url_for('post', post_id = post.id )}}"
-          >Readmore</a
-        >
-      </p>
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
+  
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

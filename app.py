@@ -171,16 +171,6 @@ def checkBookmarked(post, user):
         return False
 
 # liking
-@app.route('/toggleLike/<int:post_id>', methods=['GET','POST'])
-@login_required
-def toggleLike(post_id):
-    post = Post.query.filter_by(id=post_id).first()
-    if ckeckLiked(post, current_user):
-        unLiked(post, current_user)
-    else:
-        isLiked(post, current_user)
-    return redirect(url_for('post', post_id= post_id))
-
 def checkLike(post, user):
     user = post.likes.filter_by(id = user.id).first()
     if user:
@@ -195,6 +185,18 @@ def isLiked(post, user):
 def unLiked(post, user):
     post.likes.remove(user)
     db.session.commit()
+
+@app.route('/toggleLike/<int:post_id>', methods=['GET','POST'])
+@login_required
+def toggleLike(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    if checkLike(post, current_user):
+        unLiked(post, current_user)
+    else:
+        isLiked(post, current_user)
+    return redirect(url_for('post', post_id= post_id))
+
+
 
 ## OANH
 

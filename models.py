@@ -25,10 +25,10 @@ class User(UserMixin, db.Model, object):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(120), nullable=False)
     posts = db.relationship('Post', backref='owner', lazy='dynamic')
-    likes = db.relationship('Like', backref='owner', lazy='dynamic')
+    # likes = db.relationship('Like', backref='owner', lazy='dynamic')
     topics = db.relationship('Topic', backref='owner', lazy='dynamic')
     comments = db.relationship('Comment', backref='owner', lazy='dynamic')
-    likes = db.relationship('Like', backref='owner', lazy='dynamic')
+    # likes = db.relationship('Like', backref='owner', lazy='dynamic')
     events = db.relationship('Event', backref='owner', lazy='dynamic')
     subscriptions = db.relationship('Topic', secondary=subs, backref=db.backref('subscribers', lazy='dynamic'))
     bookmarks = db.relationship('Post', secondary= bookmarks , backref=db.backref('bookmarkers', lazy='dynamic'))
@@ -63,7 +63,7 @@ class Post(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), nullable=True )
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
-    likes = db.relationship('Like', backref='post', lazy='dynamic')
+    # likes = db.relationship('Like', backref='post', lazy='dynamic')
 
 
 
