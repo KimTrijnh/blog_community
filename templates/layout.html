@@ -6,12 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
     
     <title>Document</title>
 </head>
 <body>
+    <h1 class="test">header</h1>
     {% block content %} {% endblock %}
 
 </body>

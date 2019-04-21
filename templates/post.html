@@ -1,13 +1,29 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %} 
+{% block content %}
 <div class="container my-5">
   <div class="row">
     <div class="col-md-8">
-      <h1>{{ post.title }}</h1>
-      <span>{{ moment(post.created_at).format("LLL") }}</span>
-      <div>
+      <h1 class="test">{{ post.title }}</h1>
+      <span class="mr-2"
+        >Written by: <a href="#">{{ author.username }}</a></span
+      >
+      <span class="m-2">{{ moment(post.created_at).format("LLL") }}</span>
+      <span class="m-2"
+        >
+        <a id="bookmark_icon" href="{{ url_for('clicked', post_id = post.id )}}">
+            <i class="fas fa-bookmark" value="false"></i>
+        </a></span>
+      <span class="m-2"
+      > <i id="like_icon" class="fas fa-heart"></i></i
+    ></span>
+    <form method='POST'>
+        <a href="{{ url_for('clicked', post_id = post.id )}}"><button type="button" id="btn" name="btn">test</button></a>
+    </form>
+   
+
+      <div class="my-3">
         {{ post.content }}
       </div>
-      <span>Written by {{ author.username }}</span>
 
       {% if current_user.is_authenticated %}
       <form class="form-group" method="POST">
@@ -17,12 +33,10 @@ your comment...</textarea
         <button class="btn btn-success" type="submit">submit</button>
       </form>
       {% else %}
-      <div class="alert alert-primary" role="alert">
-          Please login to comment
-        </div>
-      {% endif %}
-
-      {% for comment in comments %}
+      <div class="alert alert-primary my-5" role="alert">
+        Please <a href="{{ url_for('login')}}">login</a> to comment
+      </div>
+      {% endif %} {% for comment in comments %}
       <div class="comment">
         <h5>{{ comment.owner.username }}</h5>
         <p>
@@ -34,15 +48,24 @@ your comment...</textarea
     </div>
 
     <div class="col-md-4">
-      {% if post.topic %}
-      <p>
-        <a href="{{ url_for('topic', topic_id = post.topic.id )}}">
-          Topic: {{ post.topic.title }}</a
-        >
-      </p>
-      {% endif %}
+      <div class="bg bg-light mt-5 mx-2 p-3">
+        {% if post.topic %}
+        <p>
+          <a href="{{ url_for('topic', topic_id = post.topic.id )}}">
+            Topic: {{ post.topic.title }}</a
+          >
+        </p>
+        {% endif %}
 
-      <p>category: {{ category.name }}</p>
+        <p>
+          <span class="badge badge-primary">Category:</span> {{ category.name }}
+        </p>
+        <span class="badge badge-primary">Bookmarks: </span>
+        <span class="badge badge-warning">Likes: </span>
+        <span class="badge badge-success">comments: </span>
+
+        
+      </div>
     </div>
   </div>
 
@@ -64,4 +87,24 @@ your comment...</textarea
   {% endif %}
 </div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+document.getElementById("test").addEventListener("click", testshow);
+function testshow() {
+  alert('test')
+}
+bookmark_icon = document.getElementById("bookmark_icon")
+bookmark_icon.addEventListener("click", toggleBookmark);
+function toggleBookmark() {
+      alert('click')
+      if( bookmark_icon.getAttribute("class") == "text-primary") {
+        bookmark_icon.style.color = "black",
+        bookmark_icon.setAttribute('value', 'false' )
+      } else {
+        bookmark_icon.style.color = "blue"
+        bookmark_icon.setAttribute('value', 'true' )
+      }
+    }
+
+</script>
 {% endblock %}

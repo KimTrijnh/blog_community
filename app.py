@@ -72,7 +72,7 @@ def create_post(topic_id=None):
 
 @app.route('/post/<int:post_id>', methods= ['GET','POST'])
 def post(post_id=None):
-    current_user.id=1
+    current_user = User.query.filter_by(id=1).first()
     p = Post.query.filter_by(id=post_id).first()
     author = p.owner
     category = p.category
@@ -126,3 +126,30 @@ def topic(topic_id):
     author = t.owner.username
     category = Category.query.filter_by(id=t.category_id).first()
     return render_template('topic.html', topic = t, author = author, category=category)
+
+
+def isBookmarked(post, user):
+    post.bookmarkers.append(user)
+    db.session.commit()
+
+def unBookmarked(post, user):
+    post.bookmarkers.remove(user)
+    db.session.commit()
+
+@app.route('/clickbtn/<int:post_id>', methods=['GET','POST'])
+def clicked(post_id):
+    current_user = User.query.filter_by(id=1).first()
+    post = Post.query.filter_by(id=post_id).first()
+    if checkBookmarked(post, current_user):
+      unBookmarked(post, current_user)  
+    else:
+        isBookmarked(post, current_user)
+    return redirect(url_for('post', post_id= post_id))
+
+
+def checkBookmarked(post, user):
+    user = post.bookmarkers.filter_by(id = user.id).first()
+    if user:
+        return True
+    else:
+        return False
