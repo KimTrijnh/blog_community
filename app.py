@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, session 
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -84,7 +84,7 @@ def login():
         if error is None: 
             session.clear()
             session['user_id']=db.execute('SELECT id from User WHERE username = ?', (username,)).fetchone().id
-            return redirect(url_for('home.html'))
+            return redirect(url_for('home'))
      flash(error)
      return render_template('login.html')
 
@@ -99,13 +99,13 @@ def load_logged_in_user():
 @app.route(/logout)
 def logout():
     session.clear()
-    return redirect(url_for('home.html'))
+    return redirect(url_for('home'))
 
 @app.route(/user_account)
 def user_account(): 
     user_id = session.get('user_id')
     if user_id is None:
-        return redirect(url_for('login.html'))
+        return redirect(url_for('login'))
         error= 'You have to login to access user_account page!'
     else
         user =  get_db().execute('SELECT * FROM User WHERE id=?',user_id).fetchone()

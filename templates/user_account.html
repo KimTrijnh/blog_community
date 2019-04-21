@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block header %}
+  <h1>{% block title %}User Account{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+ <div>
+     <h2>{{user['username']}}'S PROFILE</h2>
+     <p> Your username: {{user['username']}} </p>
+     <p> Your email:{{user['email']}} </p>
+ </div>  
+<div>
+    <h2>YOUR BOOKMARKS: </h2>
+    {% for bookmark in bookmarks %}
+    <p> <a href= "{{url_for('post', post_id= bookmark['post_id'])}}">
+#     {{Post.query.filter_by(id=post_id).first()}}  
+     </p>
+</div>
+<div>
+        <h2>TOPICS YOU'VE CREATED: </h2>
+        {% for topic in topics %}
+        <p> <a href= "{{url_for('post', post_id= bookmark['post_id'])}}">
+    #     {{topic['title']}}  
+         </p>
+    </div>
+{% endblock %}
