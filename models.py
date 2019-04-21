@@ -24,7 +24,7 @@ class User(UserMixin, db.Model, object):
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(120), nullable=False)
-    img_url = db.Column(db.String(300), nullable=True)
+    # img_url = db.Column(db.String(300), nullable=True)
     posts = db.relationship('Post', backref='owner', lazy='dynamic')
     topics = db.relationship('Topic', backref='owner', lazy='dynamic')
     comments = db.relationship('Comment', backref='owner', lazy='dynamic')
