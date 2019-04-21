@@ -11,11 +11,14 @@
       <span class="m-2"
         >
         <a class="unstyled" href="{{ url_for('clicked', post_id = post.id )}}">
-            <i id="bookmark_icon" class="fas fa-bookmark"></i>
+            <i id="bookmark_icon" class="fas fa-bookmark {{icon_color}}"></i>
         </a></span>
       <span class="m-2"
-      > <i id="like_icon" class="fas fa-heart"></i></i
-    ></span>
+      > 
+      <a class="unstyled" href="{{ url_for('toggleLike', post_id = post.id )}}">
+          <i id="like_icon" class="fas fa-heart {{like_color}}"> </i>
+      </a>
+     </span>
     <form method='POST'>
         <a href="{{ url_for('clicked', post_id = post.id )}}"><button type="button" id="btn" name="btn">test</button></a>
     </form>

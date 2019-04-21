@@ -14,6 +14,10 @@ bookmarks = db.Table('bookmarks',
 db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
 db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
+likes = db.Table('likes', 
+db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
+
 
 class User(UserMixin, db.Model, object):
     id= db.Column(db.Integer, primary_key = True)
@@ -28,6 +32,8 @@ class User(UserMixin, db.Model, object):
     events = db.relationship('Event', backref='owner', lazy='dynamic')
     subscriptions = db.relationship('Topic', secondary=subs, backref=db.backref('subscribers', lazy='dynamic'))
     bookmarks = db.relationship('Post', secondary= bookmarks , backref=db.backref('bookmarkers', lazy='dynamic'))
+    likes = db.relationship('Post', secondary= likes , backref=db.backref('likes', lazy='dynamic'))
+
 
 
     def set_password(self, password):
@@ -70,11 +76,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     # reaction_id = db.Column(db.Integer, db.ForeignKey('reaction.id'))
 
-class Like(db.Model):
-    id= db.Column(db.Integer, primary_key = True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
+
 
 
 class Category(db.Model):
@@ -103,6 +105,11 @@ class Event(db.Model):
 #     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'), nullable=False)
 #     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+# class Like(db.Model):
+#     id= db.Column(db.Integer, primary_key = True)
+#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
 ## FUNCTIONS TO ADJUST DATABASE TABLE'S
 # db.create_all()
 def create_category(name):

@@ -1,18 +1,31 @@
 {% extends "layout.html" %} 
 
 {% block content %}
-<div class="container">
-<h1>CREATE A TOPIC</h1>
+
+<div class="container my-5">
+    <h3 class="test">CREATE A TOPIC</h3>
   <form method="POST">
     <div class="row">
       <div class="col-md-8 col-sm-12 form-group">
-        <input
+          {% with messages = get_flashed_messages() %} 
+          {% if messages %}
+          <div class="alert alert-danger" role="alert">
+            <ul class="flashes list-unstyled">
+              {% for message in messages %}
+              <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        
+          {% endif %} 
+          {% endwith %}
+          <input
           name="title"
           placeholder="title"
-          class="form-control"
+          class="form-control mb-3"
           id="title"
         />
-        <textarea class="form-control" id="description" name="description" rows="10" placeholder="brief description of your topic"></textarea>
+        <textarea class="form-control my-3" id="description" name="description" rows="10" placeholder="brief description of your topic"></textarea>
         <button class="btn btn-primary" type="submit">
           Submit
         </button>

@@ -101,11 +101,12 @@
               <a class="dropdown-item pl-5" href="{{ url_for('create_post')}}"><small>New post</small></a>
               <a class="dropdown-item pl-5" href="{{ url_for('create_topic')}}"><small>New topic</small></a>
               <!-- <a class="dropdown-item" href="#">New event</a> -->
+              <a class="dropdown-item text-primary" href="{{ url_for('logout')}}">Log Out</a>
             </div>
-            <a class="btn btn-dark" href="{{ url_for('logout')}}">Log Out</a>
+            <!-- <a class="btn btn-dark" href="{{ url_for('logout')}}">Log Out</a> -->
             {% else %}
-            <a class="btn btn-light" href="{{ url_for('login')}}">Log In</a>
-            <a class="btn btn-light" href="{{ url_for('register')}}">Sign up</a>
+            <a class="btn btn-light mr-2" href="{{ url_for('login')}}">Log In</a>
+            <a class="btn btn-light mr-3" href="{{ url_for('register')}}">Sign up</a>
             {% endif %}
 
           </li>

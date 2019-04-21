@@ -20,7 +20,7 @@ app.config.from_object(Config)
 ## DATABSE CONNECT below
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-from models import User, Post, Topic, Comment, Event, Like, subs, bookmarks, Category
+from models import User, Post, Topic, Comment, Event, likes, subs, bookmarks, Category
 
 ## DATABASE CONNECT above
 login_manager = LoginManager()
@@ -71,7 +71,6 @@ def create_post(topic_id=None):
                 p = Post(title = title, content = content, user_id = user_id, category_id = int(category), topic_id=topic_id)
                 db.session.add(p)
                 db.session.commit()
-                flash('your post is successfull pulished')
                 return redirect(url_for('post', post_id= p.id))
             else:
                 flash('please check your title/content/category')
@@ -80,25 +79,30 @@ def create_post(topic_id=None):
 
 @app.route('/post/<int:post_id>', methods= ['GET','POST'])
 def post(post_id=None):
-    current_user = User.query.filter_by(id=1).first()
     post = Post.query.filter_by(id=post_id).first()
     author = post.owner
     category = post.category
+    icon_color = 'text-dark'
+    like_color = 'text-dark'
     if post.topic:
-        posts_in_topic = p.topic.posts.filter(Post.id != p.id).all()
+        posts_in_topic = post.topic.posts.filter(Post.id != post.id).all()
     else:
         posts_in_topic = None
-    if checkBookmarked(post, current_user):
-        icon_color = 'text-primary'
-    else:
-        icon_color = 'text-dark'
-
+    if current_user.is_authenticated:
+        if checkBookmarked(post, current_user):
+            icon_color = 'text-primary'
+        else:
+            icon_color = 'text-dark'
+        if checkLike(post, current_user):
+            like_color = 'text-danger'
+        else:
+            like_color = 'text-dark'
     if request.method == 'POST':
         comment = request.form['comment']
         create_comment(comment, current_user.id, post_id)
     comments = post.comments.all()
     comments.reverse()
-    return render_template('post.html', post = post, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic, icon_color = icon_color)
+    return render_template('post.html', post = post, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic, icon_color = icon_color, like_color=like_color)
 
 
 def create_comment(content, user_id, post_id):
@@ -122,24 +126,25 @@ def create_topic():
             category = request.form['category']
 
             if title and description and category:
-                t = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
-                db.session.add(t)
+                topic = Topic(title = title, description = description, user_id = user_id, category_id = int(category))
+                db.session.add(topic)
+                topic.subscribers.append(current_user)
                 db.session.commit()
-                flash('your topic is successfull created')
-                return redirect(url_for('topic', topic_id= t.id))
+                return redirect(url_for('topic', topic_id= topic.id))
             else:
                 flash('please check your title/description/category')
     return render_template('create_topic.html')
 
+
 @app.route('/topic/<int:topic_id>')
 def topic(topic_id):
-    current_user.id=1
-    t = Topic.query.filter_by(id=topic_id).first()
-    author = t.owner.username
-    category = Category.query.filter_by(id=t.category_id).first()
-    return render_template('topic.html', topic = t, author = author, category=category)
+    topic = Topic.query.filter_by(id=topic_id).first()
+    author = topic.owner.username
+    category = Category.query.filter_by(id=topic.category_id).first()
+    return render_template('topic.html', topic = topic, author = author, category=category)
 
 
+# bookmarking
 def isBookmarked(post, user):
     post.bookmarkers.append(user)
     db.session.commit()
@@ -149,8 +154,8 @@ def unBookmarked(post, user):
     db.session.commit()
 
 @app.route('/clickbtn/<int:post_id>', methods=['GET','POST'])
+@login_required
 def clicked(post_id):
-    current_user = User.query.filter_by(id=1).first()
     post = Post.query.filter_by(id=post_id).first()
     if checkBookmarked(post, current_user):
         unBookmarked(post, current_user)
@@ -165,7 +170,31 @@ def checkBookmarked(post, user):
     else:
         return False
 
+# liking
+@app.route('/toggleLike/<int:post_id>', methods=['GET','POST'])
+@login_required
+def toggleLike(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    if ckeckLiked(post, current_user):
+        unLiked(post, current_user)
+    else:
+        isLiked(post, current_user)
+    return redirect(url_for('post', post_id= post_id))
 
+def checkLike(post, user):
+    user = post.likes.filter_by(id = user.id).first()
+    if user:
+        return True
+    else:
+        return False
+
+def isLiked(post, user):
+    post.likes.append(user)
+    db.session.commit()
+
+def unLiked(post, user):
+    post.likes.remove(user)
+    db.session.commit()
 
 ## OANH
 
@@ -236,6 +265,8 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
+
 # @app.before_app_request 
 # def load_logged_in_user():
 #     user_id = session.get('user_id')
@@ -243,7 +274,6 @@ def logout():
 #         g.user = None 
 #     else:
 #         g.user = get_db().execute('SELECT * from User WHERE id =?',user_id).fetchone()
-
 
 
 # @app.route('/user_account')
