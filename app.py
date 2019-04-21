@@ -38,8 +38,13 @@ def home():
     hot_topics= db.session.query(Topic, db.func.count(subs.c.user_id).label('total')).join(subs).group_by(Topic.title).order_by(desc('total')).limit(3)
 
     newly_created_topics= db.session.query(Topic, db.func.count(subs.c.user_id).label('total')).join(subs).group_by(Topic.title).order_by(desc(Topic.created_at)).limit(3)
+    
+    # if current_user.is_authenticated and current_user.img_url:
+    #     avatar = current_user.img_url
+    # else:
+    avatar = 'https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg'
 
-    return render_template('home.html', title='Home', hot_topics=hot_topics, newly_created_topics=newly_created_topics)
+    return render_template('home.html', title='Home', hot_topics=hot_topics, newly_created_topics=newly_created_topics, avatar=avatar)
 
 @app.route('/discovery')
 def discovery():
