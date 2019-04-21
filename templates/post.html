@@ -10,8 +10,8 @@
       <span class="m-2">{{ moment(post.created_at).format("LLL") }}</span>
       <span class="m-2"
         >
-        <a id="bookmark_icon" href="{{ url_for('clicked', post_id = post.id )}}">
-            <i class="fas fa-bookmark" value="false"></i>
+        <a class="unstyled" href="{{ url_for('clicked', post_id = post.id )}}">
+            <i id="bookmark_icon" class="fas fa-bookmark"></i>
         </a></span>
       <span class="m-2"
       > <i id="like_icon" class="fas fa-heart"></i></i
@@ -97,12 +97,10 @@ bookmark_icon = document.getElementById("bookmark_icon")
 bookmark_icon.addEventListener("click", toggleBookmark);
 function toggleBookmark() {
       alert('click')
-      if( bookmark_icon.getAttribute("class") == "text-primary") {
-        bookmark_icon.style.color = "black",
-        bookmark_icon.setAttribute('value', 'false' )
+      if( bookmark_icon.style.color == "blue") {
+        bookmark_icon.style.color = 'black'
       } else {
-        bookmark_icon.style.color = "blue"
-        bookmark_icon.setAttribute('value', 'true' )
+        bookmark_icon.style.color = 'blue'
       }
     }
 

@@ -1,0 +1,39 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container text-center">
+  <div class="my-4">
+    <input
+      class="search-box rounded"
+      type="text"
+      placeholder="Search"
+      aria-label="Search"
+    />
+  </div>
+  {% for topic in topics %}
+  <!-- Topic -->
+  <div class="topic-wrapper">
+    <div class="row px-5 pt-3">
+      <div class="col-9 text-left">
+          <h4>{{topic[0].title}} </h4>
+          <div class="topic-content px-2 py-2 mb-3">
+            {{topic[0].description}}
+            <div><a href="#"><small>Readmore>>></small></a></div>
+          </div>
+      </div>
+      <div class="col-3 list-unstyled text-right d-flex flex-column justify-content-between pb-3">
+          <div>category: dont know</div>
+          <div><button class="btn btn-light btn-sm mt-2">Join this topic</button></div>
+      </div>
+    </div>
+    <div>
+      <ul class="list-unstyled d-flex justify-content-around px-5 pb-2 details-row">
+        <li class="topic-details flex-fill">writer: {{topic[1]}}</li>
+        <li class="topic-details flex-fill">reader: 1</li>
+        <li class="topic-details flex-fill">like: 1</li>
+        <li class="flex-fill">comment: 1</li>
+      </ul>
+    </div>
+  </div>
+  <!-- Topic -->
+  {% endfor %}
+</div>
+{% endblock %}

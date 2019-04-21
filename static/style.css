@@ -1,7 +1,38 @@
-#bookmark_icon {
+.unstyled {
     text-decoration: none !important; 
 }
 
 .test {
     color : blueviolet;
 }
+
+/* nav bar */
+.nav-style {
+    background-color: purple;
+  }
+  /* home page */
+  .search-box {
+    width: 500px;
+  }
+  /* discovery */
+  .topic-wrapper {
+    background-color: purple;
+    color: white;
+    border-radius: 5px;
+  }
+  .details-row {
+    opacity: 0.9;
+  }
+  .content-box {
+    /* background: rgb(128,0,128,0.6);
+     */
+     background-color: black;
+  }
+  .topic-details {
+    border-right: white solid 2px;
+  }
+  .topic-content {
+    background-color: white;
+    color: purple;
+    border-radius: 3px;
+  }

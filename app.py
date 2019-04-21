@@ -2,12 +2,13 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy import desc
 from datetime import datetime
 from flask_moment import Moment
 from flask_login import UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager
-
+from werkzeug.urls import url_parse
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 
 
 app = Flask(__name__)
@@ -24,31 +25,38 @@ from models import User, Post, Topic, Comment, Event, Like, subs, bookmarks, Cat
 ## DATABASE CONNECT above
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+def load_user(id):
+    return User.query.get(int(id))
 
 ###  ROUTES HERE
 @app.route('/')
 @app.route('/home')
 def home():
-    u = User.query.filter_by(id=1).first()
-    return u.username
+    hot_topics= db.session.query(Topic, db.func.count(subs.c.user_id).label('total')).join(subs).group_by(Topic.title).order_by(desc('total')).limit(3)
+
+    newly_created_topics= db.session.query(Topic, db.func.count(subs.c.user_id).label('total')).join(subs).group_by(Topic.title).order_by(desc(Topic.created_at)).limit(3)
+
+    return render_template('home.html', title='Home', hot_topics=hot_topics, newly_created_topics=newly_created_topics)
+
+@app.route('/discovery')
+def discovery():
+    topics = db.session.query(Topic, db.func.count(subs.c.user_id).label('total')).join(subs).group_by(Topic.title).order_by(desc('total'))
+    return render_template('discovery.html', title="Discovery", topics=topics)
 
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
-
+# @app.route('/login')
+# def login():
+#     return render_template('login.html')
 
 
 @app.route('/create_post/<int:topic_id>', methods=['GET','POST'])
 @app.route('/create_post', methods=['GET','POST'])
-
-# @login_required
+@login_required
 def create_post(topic_id=None):
-    current_user = User.query.filter_by(id=1).first()
+    # current_user = User.query.filter_by(id=1).first()
     if not current_user.is_authenticated:
         flash('please login to create post')
         return redirect(url_for('login'))
@@ -73,19 +81,24 @@ def create_post(topic_id=None):
 @app.route('/post/<int:post_id>', methods= ['GET','POST'])
 def post(post_id=None):
     current_user = User.query.filter_by(id=1).first()
-    p = Post.query.filter_by(id=post_id).first()
-    author = p.owner
-    category = p.category
-    if p.topic:
+    post = Post.query.filter_by(id=post_id).first()
+    author = post.owner
+    category = post.category
+    if post.topic:
         posts_in_topic = p.topic.posts.filter(Post.id != p.id).all()
     else:
         posts_in_topic = None
+    if checkBookmarked(post, current_user):
+        icon_color = 'text-primary'
+    else:
+        icon_color = 'text-dark'
+
     if request.method == 'POST':
         comment = request.form['comment']
         create_comment(comment, current_user.id, post_id)
-    comments = p.comments.all()
+    comments = post.comments.all()
     comments.reverse()
-    return render_template('post.html', post = p, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic)
+    return render_template('post.html', post = post, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic, icon_color = icon_color)
 
 
 def create_comment(content, user_id, post_id):
@@ -95,10 +108,9 @@ def create_comment(content, user_id, post_id):
 
 
 
-
 @app.route('/create_topic', methods=['GET','POST'])
+@login_required
 def create_topic():
-    current_user = User.query.filter_by(id=1).first()
     if not current_user.is_authenticated:
         flash('please login to create topic')
         return redirect(url_for('login'))
@@ -141,11 +153,10 @@ def clicked(post_id):
     current_user = User.query.filter_by(id=1).first()
     post = Post.query.filter_by(id=post_id).first()
     if checkBookmarked(post, current_user):
-      unBookmarked(post, current_user)  
+        unBookmarked(post, current_user)
     else:
         isBookmarked(post, current_user)
     return redirect(url_for('post', post_id= post_id))
-
 
 def checkBookmarked(post, user):
     user = post.bookmarkers.filter_by(id = user.id).first()
@@ -153,3 +164,98 @@ def checkBookmarked(post, user):
         return True
     else:
         return False
+
+
+
+## OANH
+
+@app.route('/sign_up', methods=['GET', 'POST'])
+def register():
+    if request.method=='POST':
+        username = request.form ['username']
+        password = request.form ['password']
+        email = request.form ['email']
+        error = None 
+        user = User.query.filter_by(username = username).first()
+        check_email  = User.query.filter_by(email = email).first()
+        if not username:
+            error='Username is required.'
+        elif user is not None: 
+            error='This username is not available'
+        elif not password:
+            error='Password is required.'
+        elif not email:
+            error= 'Email is required.'
+        elif  '@' not in email:
+            error='Email must contain @.'
+        elif check_email is not None: 
+            error='This email has been registered.'
+        else:
+            user = User(username = username, email = email, password_hash = password)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for('home'))
+        flash(error)
+    return render_template('signup.html')
+            
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+     if request.method=='POST':
+        username = request.form ['username']
+        password = request.form ['password']
+        error = None 
+        user = User.query.filter_by(username = username).first()
+        if not username:
+            error='Username is required.'
+            flash(error, 'danger')
+        elif user is None: 
+            error='This username is not registered!'
+            flash(error, 'danger')
+        elif not password:
+            error='Password is required.'
+            flash(error, 'danger')
+        elif not user.check_password(password): 
+            error='Incorrect Password!'
+            flash(error, 'danger')
+            return redirect(url_for('login'))
+        else:
+            login_user(user)
+            next_page = request.args.get('next')
+            if not next_page or url_parse(next_page).netloc != '':
+                return redirect(url_for('home'))  
+            return redirect(next_page)
+
+     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+# @app.before_app_request 
+# def load_logged_in_user():
+#     user_id = session.get('user_id')
+#     if user_id is None: 
+#         g.user = None 
+#     else:
+#         g.user = get_db().execute('SELECT * from User WHERE id =?',user_id).fetchone()
+
+
+
+# @app.route('/user_account')
+# def user_account():
+#     user_id = session.get('user_id')
+#     if user_id is None:
+#         return redirect(url_for('login.html'))
+#         error= 'You have to login to access user_account page!'
+#     else:
+#         user =  get_db().execute('SELECT * FROM User WHERE id=?',user_id).fetchone()
+#         bookmarks = get_db.execute('SELECT * FROM Bookmark WHERE user_id=?',user_id).fetchall()
+#         topics = get_db.execute('SELECT * FROM Topic WHERE user_id=?',user_id).fetchall()
+#         return render_template('user_account.html', user=user, bookmarks=bookmarks, topics=topics )
+
+

@@ -1,1 +1,41 @@
-<h>Login</h>
+{% extends 'layout.html' %} 
+{% block header %}
+<h1>{% block title %}Log In{% endblock %}</h1>
+{% endblock %} 
+
+{% block content %}
+ 
+
+<div class="container mx-auto mt-5 w-25">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-primary" role="alert">
+          <ul class="flashes ">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        {% endif %} {% endwith %}
+        
+        {% if not current_user.is_authenticated %}
+        <form method="POST" class="form-signin">
+            <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="username" required autofocus>
+            
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+            <div class="checkbox mb-3">
+              <label>
+                <input type="checkbox" value="remember-me"> Remember me
+              </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          </form>
+          {% endif %}
+</div>
+
+{% endblock %}

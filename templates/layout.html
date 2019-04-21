@@ -1,22 +1,133 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
-    
-    <title>Document</title>
-</head>
-<body>
-    <h1 class="test">header</h1>
-    {% block content %} {% endblock %}
+    <title>{{ title }} Page</title>
+  </head>
+  <body>
+    <!--Navbar -->
+    <nav
+      class="mb-1 navbar navbar-expand-lg navbar-dark secondary-color lighten-1 nav-style"
+    >
+      <a class="navbar-brand" href="#">Reader Community</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent-555"
+        aria-controls="navbarSupportedContent-555"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        <ul class="navbar-nav mr-auto">
+          {% if title=="Home" %}
+          <li class="nav-item active">
+          {% else %}
+          <li class="nav-item">
+          {% endif %}
+            <a class="nav-link" href="{{ url_for('home') }}">Home </a>
+          </li>
 
-</body>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdownMenuLink-555"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              >Categories
+            </a>
+            <div
+              class="dropdown-menu dropdown-secondary"
+              aria-labelledby="navbarDropdownMenuLink-555"
+            >
+              <a class="dropdown-item" href="#">Frontend Development</a>
+              <a class="dropdown-item" href="#">Backend Development </a>
+              <a class="dropdown-item" href="#">Design UI/UX </a>
+            </div>
+          </li>
+          {% if title=="Discovery" %}
+          <li class="nav-item active">
+          {% else %}
+          <li class="nav-item">
+          {% endif %}
+            <a class="nav-link" href="{{ url_for('discovery') }}">Discovery</a>
+          </li>
+        </ul>
+        <!-- end left side -->
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+          <li class="nav-item avatar dropdown">
+              {% if current_user.is_authenticated %}
+            <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdownMenuLink-55"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <img
+                src="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+                class="rounded-circle z-depth-0 avatar-img"
+                alt="avatar image"
+                height="42"
+                width="42"
+              />
+            </a>
+            <div
+              class="dropdown-menu dropdown-menu-right dropdown-secondary"
+              aria-labelledby="navbarDropdownMenuLink-55"
+            >
+              <a class="dropdown-item" href="#">Acount</a>
+              <div class="dropdown-divider"></div>
+              <span class="dropdown-item">Create new: </span>
+              <a class="dropdown-item pl-5" href="{{ url_for('create_post')}}"><small>New post</small></a>
+              <a class="dropdown-item pl-5" href="{{ url_for('create_topic')}}"><small>New topic</small></a>
+              <!-- <a class="dropdown-item" href="#">New event</a> -->
+            </div>
+            <a class="btn btn-dark" href="{{ url_for('logout')}}">Log Out</a>
+            {% else %}
+            <a class="btn btn-light" href="{{ url_for('login')}}">Log In</a>
+            <a class="btn btn-light" href="{{ url_for('register')}}">Sign up</a>
+            {% endif %}
+
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!--/.Navbar -->
+    {% block content %} {% endblock %}
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
