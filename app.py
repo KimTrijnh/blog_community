@@ -101,8 +101,11 @@ def post(post_id=None):
         comment = request.form['comment']
         create_comment(comment, current_user.id, post_id)
     comments = post.comments.all()
+    comment_total = len(post.comments.all())
+    bookmark_total = len(post.bookmarkers.all())
+    like_total = len(post.likes.all())
     comments.reverse()
-    return render_template('post.html', post = post, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic, icon_color = icon_color, like_color=like_color)
+    return render_template('post.html', post = post, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic, icon_color = icon_color, like_color=like_color, comment_total=comment_total, bookmark_total=bookmark_total, like_total = like_total)
 
 
 def create_comment(content, user_id, post_id):
