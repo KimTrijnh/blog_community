@@ -9,12 +9,18 @@
       </div>
       <span>Written by {{ author.username }}</span>
 
+      {% if current_user.is_authenticated %}
       <form class="form-group" method="POST">
         <textarea class="form-control" id="comment" rows="3" name="comment">
 your comment...</textarea
         >
         <button class="btn btn-success" type="submit">submit</button>
       </form>
+      {% else %}
+      <div class="alert alert-primary" role="alert">
+          Please login to comment
+        </div>
+      {% endif %}
 
       {% for comment in comments %}
       <div class="comment">
@@ -41,8 +47,19 @@ your comment...</textarea
   </div>
 
   {% if post.topic %}
+  <h4>Post that you might interted in</h4>
   <div class="d-flex flex-wrap">
-    <h4>Post that you might interted in</h4>
+    {% for post in posts_in_topic %}
+    <div class="border border-primary">
+      <h3>{{ post.title }}</h3>
+      <p>
+        {{ post.content[0:100] }}...<a
+          href="{{ url_for('post', post_id = post.id )}}"
+          >Readmore</a
+        >
+      </p>
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
 </div>

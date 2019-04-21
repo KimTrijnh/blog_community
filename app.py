@@ -43,10 +43,11 @@ def login():
 
 
 
-@app.route('/create_post', methods=('GET','POST'))
-@app.route('/create_post/<int:topic_id>', methods=('GET','POST'))
+@app.route('/create_post/<int:topic_id>', methods=['GET','POST'])
+@app.route('/create_post', methods=['GET','POST'])
+
 # @login_required
-def create_post(topic_id):
+def create_post(topic_id=None):
     current_user = User.query.filter_by(id=1).first()
     if not current_user.is_authenticated:
         flash('please login to create post')
@@ -65,22 +66,26 @@ def create_post(topic_id):
                 flash('your post is successfull pulished')
                 return redirect(url_for('post', post_id= p.id))
             else:
-                flash('please check your title/content/catagory')
+                flash('please check your title/content/category')
     return render_template('create_post.html')
 
 
-@app.route('/post/<int:post_id>', methods= ('GET', 'POST'))
-def post(post_id):
+@app.route('/post/<int:post_id>', methods= ['GET','POST'])
+def post(post_id=None):
     current_user.id=1
     p = Post.query.filter_by(id=post_id).first()
-    author = User.query.filter_by(id=p.user_id).first()
-    category = Category.query.filter_by(id=p.category_id).first()
+    author = p.owner
+    category = p.category
+    if p.topic:
+        posts_in_topic = p.topic.posts.filter(Post.id != p.id).all()
+    else:
+        posts_in_topic = None
     if request.method == 'POST':
         comment = request.form['comment']
         create_comment(comment, current_user.id, post_id)
-    comments = Comment.query.filter_by(post_id= post_id).all()
+    comments = p.comments.all()
     comments.reverse()
-    return render_template('post.html', post = p, author = author, category = category, comments = comments)
+    return render_template('post.html', post = p, author = author, category = category, comments = comments, posts_in_topic=posts_in_topic)
 
 
 def create_comment(content, user_id, post_id):
@@ -91,7 +96,7 @@ def create_comment(content, user_id, post_id):
 
 
 
-@app.route('/create_topic', methods=('GET', 'POST'))
+@app.route('/create_topic', methods=['GET','POST'])
 def create_topic():
     current_user = User.query.filter_by(id=1).first()
     if not current_user.is_authenticated:
@@ -111,7 +116,7 @@ def create_topic():
                 flash('your topic is successfull created')
                 return redirect(url_for('topic', topic_id= t.id))
             else:
-                flash('please check your title/description/catagory')
+                flash('please check your title/description/category')
     return render_template('create_topic.html')
 
 @app.route('/topic/<int:topic_id>')
